@@ -36,5 +36,5 @@ report$"Under 70 no AA or DLA" = ahgm_merged %>% filter(COND_over_70 == FALSE & 
 
 
 ### make a df
-write.csv(ahgm_merged, paste("./data/export/DW_AHGM_merged_", Sys.Date(), ".csv", sep=""), row.names=FALSE)
-write.csv(data.frame(condition=names(report), value= unlist(unname(report))), paste("./data/export/DW_AHGM_figures_", Sys.Date(), ".csv", sep=""), row.names=FALSE)
+write.csv(ahgm_merged, paste("../data/export/DW_AHGM_merged_", Sys.Date(), ".csv", sep=""), row.names=FALSE)
+write.csv(data.frame(condition=names(report), value= unlist(unname(report))), paste("../data/export/DW_AHGM_figures_", Sys.Date(), ".csv", sep=""), row.names=FALSE)

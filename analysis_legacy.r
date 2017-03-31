@@ -28,7 +28,7 @@ ctr$dla_total = ctr$dla_high + ctr$dla_med + ctr$dla_low
 ### Chop off the last digit of the claim_id from the ctr
 ctr$claim_id8 = str_match(ctr$claim_ref, "(.+)(.)$")[,2]
 
-### Subset members over 70 - NO LEAP YEARS INTO ACCOUNT
+### Subset members over 70 
 dt = as.Date('2010/03/17')
 R> seq(dt, length=2, by="-2 years")[2]
 age_cutoff = seq(as.Date(Sys.Date()), length=2, by="-70 years")[2]
