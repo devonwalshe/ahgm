@@ -48,10 +48,7 @@ members_plus_partial_aa_dla = members_plus[members_plus$claim_id %in% incomes_pl
 ###############################
 
 ### No. of householders 70 years and above in receipt of full Council Tax Discount – entitled to free service
-  ### Answer - total - 20641
-  ### Answer - unique claim ref - 17244
-  ### Answer - no ctax_record - 3526
-  ### Answer - unique property ref - 17156
+
 nrow(ctr_plus[ctr_plus$max_partial_ctr == "max",])
 nrow(ctr_plus[ctr_plus$max_partial_ctr == "max" & !duplicated(ctr_plus$claim_ref),])
 nrow(ctr_plus[ctr_plus$max_partial_ctr == "max" & ctr_plus$ctax_ref == "",])
@@ -60,10 +57,7 @@ ctr_plus_full = c(20641,17156,3526)
   
 ### No. of householders 70 years and above in receipt of partial CTD but with Attendance Allowance (AA) or Disability Living Allowance (DLA) – entitled to free service
 
-  ### Answer - total - 4211
-  ### Answer - unique claim ref - 814
-  ### Answer - no ctax_record - 3398
-  ### Answer - unique property ref - 813
+
 nrow(ctr_plus[(ctr_plus$max_partial_ctr == "partial" & ctr_plus$dla_total > 0) | (ctr_plus$max_partial_ctr == "partial" & ctr_plus$ata > 0),])
 nrow(ctr_plus[(ctr_plus$max_partial_ctr == "partial" & ctr_plus$dla_total > 0 & !duplicated(ctr_plus$claim_ref)) | (ctr_plus$max_partial_ctr == "partial" & ctr_plus$ata > 0 & !duplicated(ctr_plus$claim_ref)),])
 nrow(ctr_plus[(ctr_plus$max_partial_ctr == "partial" & ctr_plus$dla_total > 0 & ctr_plus$ctax_ref == "") | (ctr_plus$max_partial_ctr == "partial" & ctr_plus$ata > 0 & ctr_plus$ctax_ref == ""),])
@@ -71,10 +65,7 @@ nrow(ctr_plus[(ctr_plus$max_partial_ctr == "partial" & ctr_plus$dla_total > 0 & 
 ctr_plus_partial_dla_aa = c(4211,813,3398)
 
 ### No. of householders 70 years and above in receipt of partial CTD – service chargeable
-  ### Answer - 9830
-  ### Answer - unique claim ref - 6433
-  ### Answer - no ctax_record - 3398
-  ### Answer - unique property_ref - 6430
+
 nrow(ctr_plus[ctr_plus$max_partial_ctr == "partial",])
 nrow(ctr_plus[ctr_plus$max_partial_ctr == "partial" & !duplicated(ctr_plus$claim_ref),])
 nrow(ctr_plus[ctr_plus$max_partial_ctr == "partial" & ctr_plus$ctax_ref == "",])
@@ -82,10 +73,7 @@ nrow(ctr_plus[ctr_plus$max_partial_ctr == "partial" & !duplicated(ctr_plus$prope
 ctr_plus_partial = c(9830,6430,3398)
 
 ### No under 70 years old – with DLA or AA
-  ### Answer - 11280
-  ### Answer - unique claim ref - 7883
-  ### Answer - no ctax_record - 3560
-  ### Answer - unique property_ref - 7698 
+
 nrow(ctr_under[ctr_under$dla_total >0 | ctr_under$ata >0,])
 nrow(ctr_under[(ctr_under$dla_total >0 & !duplicated(ctr_under$claim_ref))| (ctr_under$ata >0 & !duplicated(ctr_under$claim_ref)),])
 nrow(ctr_under[(ctr_under$dla_total >0 & ctr_under$ctax_ref=="")| (ctr_under$ata >0 & ctr_under$ctax_ref==""),])
@@ -93,10 +81,7 @@ nrow(ctr_under[(ctr_under$dla_total > 0 | ctr_under$ata > 0 ) & !duplicated(ctr_
 ctr_under_dla_aa = c(11280,7698,3560)
 
 ### No. under 70 years  - with no DLA or AA
-  ### Answer - total - 70263
-  ### Answer - unique claim ref - 66866
-  ### Answer - no ctax_record - 4807
-  ### Answer - unique property_ref - 65499
+
 nrow(ctr_under[ctr_under$dla_total == 0 & ctr_under$ata == 0,])
 nrow(ctr_under[ctr_under$dla_total == 0 & ctr_under$ata == 0 & !duplicated(ctr_under$claim_ref),])
 nrow(ctr_under[ctr_under$dla_total == 0 & ctr_under$ata == 0 & ctr_under$ctax_ref == "",])
@@ -148,32 +133,22 @@ ctr_matched_plus = ctr_matched[ctr_matched$claimant_dob <= age_cutoff,]
 ctr_matched_under = ctr_matched[ctr_matched$claimant_dob > age_cutoff,]
 
 ### No. of householders 70 years and above in receipt of full Council Tax Discount – entitled to free service
-
-### Answer - total - 3678
 nrow(ctr_matched_plus[ctr_matched_plus$max_partial_ctr == "max",])
 
 ### No. of householders 70 years and above in receipt of partial CTD but with Attendance Allowance (AA) or Disability Living Allowance (DLA) – entitled to free service
-
-### Answer - total - 932
 nrow(ctr_matched_plus[(ctr_matched_plus$max_partial_ctr == "max" & ctr_matched_plus$dla_total > 0) | (ctr_matched_plus$max_partial_ctr == "max" & ctr_matched_plus$ata > 0), ])
 
 ### No. of householders 70 years and above in receipt of partial CTD – service chargeable
-
-### Answer - total - 1325
 nrow(ctr_matched_plus[ctr_matched_plus$max_partial_ctr == "partial",])
 
 ### No under 70 years old – with DLA or AA
-
-### Answer - total - 696
 nrow(ctr_matched_under[ctr_matched_under$dla_total > 0 | ctr_matched_under$ata > 0,])
 
 ### No. under 70 years  - with no DLA or AA
-
-### Answer - total - 1946
 nrow(ctr_matched_under[ctr_matched_under$dla_total == 0 & ctr_matched_under$ata == 0,])
 
 ### Combine these figures
-matched_conditions = c(3678, 932, 1325, 696, 1946)
+
 
 ### copy table
 final_table = ctr_table
@@ -208,6 +183,47 @@ nrow(ctr)
 length(academy_plus_ids)
 nrow(ctr_all_plus)
 nrow(ctr_matched_all_plus)
+
+
+#### Newer analysis from March 2017- moved on to classifying them on two conditions. See new analysis file
+
+### Add conditions
+ahgm_merged = ahgm_merged %>% mutate(COND_over_70 = CTHB_youngest_member_age >= 70, 
+                                     COND_full_CTD = CTHB_max_partial_ctr == "max", 
+                                     COND_partial_CTD = CTHB_max_partial_ctr == "partial",
+                                     COND_AA = CTHB_ata > 0,
+                                     COND_DLA = CTHB_dla_total > 0)
+
+### set up report
+report = list()
+
+### totals
+report$"Total AHGM records" = nrow(ahgm_processed$ahgm)
+report$"AHGM records with HB case" = ahgm_merged %>% filter(!is.na(ID_claim_id)) %>% nrow()
+
+### No. of householders 70 years and above in receipt of full Council Tax Discount – entitled to free service
+report$"Over 70 full CTD" = ahgm_merged %>% filter(COND_over_70 == TRUE & COND_full_CTD == TRUE) %>% nrow()
+
+### No. of householders 70 years and above in receipt of partial CTD but with Attendance Allowance (AA) or Disability Living Allowance (DLA) – entitled to free service
+report$"Over 70 partial CTD with AA or DLA" = ahgm_merged %>% filter((COND_over_70 == TRUE & COND_partial_CTD == TRUE) & (COND_AA == TRUE | COND_DLA == TRUE)) %>% nrow()
+
+### No. of householders 70 years and above in receipt of partial CTD – service chargeable
+report$"Over 70 partial CTD" = ahgm_merged %>% filter(COND_over_70 == TRUE & COND_partial_CTD == TRUE) %>% nrow()
+
+### No under 70 years old – with DLA or AA
+report$"Under 70 with AA or DLA" = ahgm_merged %>% filter(COND_over_70 == FALSE & (COND_DLA == TRUE | COND_AA == TRUE)) %>% nrow()
+
+### No. under 70 years  - with no DLA or AA
+report$"Under 70 no AA or DLA" = ahgm_merged %>% filter(COND_over_70 == FALSE & (COND_DLA == FALSE & COND_AA == FALSE)) %>% nrow()
+
+
+### New conditions tag as (elligible), (not-elligible), (unsure)
+
+
+### make a df
+write.csv(ahgm_merged, paste("../data/export/DW_AHGM_merged_", Sys.Date(), ".csv", sep=""), row.names=FALSE)
+write.csv(data.frame(condition=names(report), value= unlist(unname(report))), paste("../data/export/DW_AHGM_figures_", Sys.Date(), ".csv", sep=""), row.names=FALSE)
+
 
 
   

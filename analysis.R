@@ -1,40 +1,35 @@
 ### Analysis
 
 ### processing pipeline
-ahgm_processed = import_ahgm() %>% process_ahgm() %>% join_ahgm()
+ahgm_joined = import_ahgm() %>% process_ahgm() %>% join_ahgm()
 
 ### clone
-ahgm_merged = ahgm_processed$ahgm_merged
+ahgm_merged = ahgm_joined$ahgm_merged
 
-### Add conditions
+### New conditions tag as (elligible), (not-elligible), (unsure)
+
+### Set up conditions
 ahgm_merged = ahgm_merged %>% mutate(COND_over_70 = CTHB_youngest_member_age >= 70, 
-                                     COND_full_CTD = CTHB_max_partial_ctr == "max", 
-                                     COND_partial_CTD = CTHB_max_partial_ctr == "partial",
                                      COND_AA = CTHB_ata > 0,
-                                     COND_DLA = CTHB_dla_total > 0)
-### set up report
-report = list()
+                                     COND_DLA = CTHB_dla_total > 0,
+                                     COND_surnames_match = (AHGM_lastname == CTHB_lead_lastname)) %>%
+                              ### Use the above to generate one of them
+                              mutate(COND_under_70_no_disability = (COND_over_70 == FALSE & COND_AA == FALSE & COND_DLA == FALSE))
 
-### totals
-report$"Total AHGM records" = nrow(ahgm_processed$ahgm)
-report$"AHGM records with HB case" = ahgm_merged %>% filter(!is.na(ID_claim_id)) %>% nrow()
-
-### No. of householders 70 years and above in receipt of full Council Tax Discount – entitled to free service
-report$"Over 70 full CTD" = ahgm_merged %>% filter(COND_over_70 == TRUE & COND_full_CTD == TRUE) %>% nrow()
-
-### No. of householders 70 years and above in receipt of partial CTD but with Attendance Allowance (AA) or Disability Living Allowance (DLA) – entitled to free service
-report$"Over 70 partial CTD with AA or DLA" = ahgm_merged %>% filter((COND_over_70 == TRUE & COND_partial_CTD == TRUE) & (COND_AA == TRUE | COND_DLA == TRUE)) %>% nrow()
-
-### No. of householders 70 years and above in receipt of partial CTD – service chargeable
-report$"Over 70 partial CTD" = ahgm_merged %>% filter(COND_over_70 == TRUE & COND_partial_CTD == TRUE) %>% nrow()
-
-### No under 70 years old – with DLA or AA
-report$"Under 70 with AA or DLA" = ahgm_merged %>% filter(COND_over_70 == FALSE & (COND_DLA == TRUE | COND_AA == TRUE)) %>% nrow()
-
-### No. under 70 years  - with no DLA or AA
-report$"Under 70 no AA or DLA" = ahgm_merged %>% filter(COND_over_70 == FALSE & (COND_DLA == FALSE & COND_AA == FALSE)) %>% nrow()
+### Process elligibility
+ahgm_merged = ahgm_merged %>% mutate(assumed_eligibility = "UE") %>%
+  mutate(assumed_eligibility = ifelse(is.na(COND_surnames_match), assumed_eligibility,
+                                       ifelse(COND_surnames_match == FALSE, "QE", assumed_eligibility))) %>% 
+  mutate(assumed_eligibility = ifelse(is.na(COND_under_70_no_disability), assumed_eligibility, 
+                                       ifelse(COND_under_70_no_disability==TRUE, "NE", assumed_eligibility))) %>%
+  mutate(assumed_eligibility = ifelse((is.na(COND_over_70) | is.na(COND_surnames_match)), assumed_eligibility,
+                                      ifelse((COND_over_70 == TRUE & COND_surnames_match == TRUE), "PE", assumed_eligibility)))
 
 
-### make a df
-write.csv(ahgm_merged, paste("../data/export/DW_AHGM_merged_", Sys.Date(), ".csv", sep=""), row.names=FALSE)
-write.csv(data.frame(condition=names(report), value= unlist(unname(report))), paste("../data/export/DW_AHGM_figures_", Sys.Date(), ".csv", sep=""), row.names=FALSE)
+
+                                        
+### Write out - Subset for sensitive material
+write.csv(ahgm_merged %>% 
+            select(grep("AHGM|ID_|youngest_member_age|household_member|lead_lastname|COND|eligibility|member_names", colnames(ahgm_merged))), 
+          paste("../data/export/DW_ahgm_eligibility_processed_", Sys.Date(), ".csv", sep=""), row.names=FALSE)
+ 

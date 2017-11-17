@@ -42,6 +42,9 @@ process_ahgm_live = function(ahgm){
   ### fix colnames
   colnames(ahgm_live_processed) = c("plot", "forename", "surname", "house_no", "flat", "street", "postcode", "age", "health", "ward", "neighbourhood_no", "neighbourhood_name")
   
+  ### normalize names
+  ahgm_live_processed[,c("firstname", "middlenames", "lastname")] = top_tail_names(paste(ahgm_live_processed$forename, ahgm_live_processed$surname))
+  
   ### plot to char
   ahgm_live_processed$plot = as.character(ahgm_live_processed$plot)
   
@@ -78,6 +81,9 @@ process_ct = function(ct){
   
   ### Colnames
   colnames(ct_processed) = c("property_ref", "lead_name", "street", "addr1", "addr2", "addr3", "addr4", "postcode", "owner_code", "owner_name", "owner_addr1", "owner_addr2", "owner_addr3", "owner_addr4", "owner_postcode", "schedule_code", "schedule_name", "schedule_addr1", "schedule_addr2", "schedule_addr3", "schedule_addr4", "schedule_postcode", "unoccupied_allowance", "disc_type", "allowance", "owner_code_tenure", "schedule_code_tenure")
+  
+  ### normalize names
+  ct_processed[,c("lead_firstname", "lead_middlenames", "lead_lastname")] = top_tail_names(ct_processed$lead_name)
   
   ### as character
   ct_processed[,c("property_ref", "owner_code")] = lapply(ct_processed[,c("property_ref", "owner_code")], function(x) as.character(x))
